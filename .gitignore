@@ -1,0 +1,12 @@
+/dist/
+/build/
+/_build/
+/rpmbuild/
+*.src.rpm
+*.rpm
+*.tar.xz
+*.tar.gz
+__pycache__/
+*.pyc
+.vscode/
+.idea/

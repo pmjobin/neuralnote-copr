@@ -1,0 +1,25 @@
+name: Validate COPR packaging
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check source scripts and packaging contract
+        run: |
+          bash -n scripts/prepare-sources.sh scripts/build-srpm.sh
+          python3 scripts/verify-kit.py
+          test -s .copr/Makefile
+          test -s neuralnote.spec
+      - name: Check repository contains no generated RPM or bundled model weights
+        run: |
+          if find . -type f \( -name '*.src.rpm' -o -name '*.rpm' -o -name '*.gguf' \) | grep -q .; then
+            echo 'Unexpected binary package or model-weight file checked in' >&2
+            exit 1
+          fi

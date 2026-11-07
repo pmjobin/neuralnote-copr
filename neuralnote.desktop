@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=NeuralNote
+GenericName=Audio to MIDI Transcription
+Comment=Transcribe audio to MIDI using local machine learning
+Exec=neuralnote
+Icon=neuralnote
+Terminal=false
+Categories=AudioVideo;Audio;Music;
+StartupNotify=true
