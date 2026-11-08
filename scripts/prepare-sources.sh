@@ -3,7 +3,7 @@
 # Network access is required here, but MUST NOT be needed in %prep/%build.
 set -Eeuo pipefail
 
-VERSION=2.1.0
+VERSION=2.2.0
 NAME="neuralnote-${VERSION}-vendored.tar.xz"
 OUTDIR="${1:-$PWD/dist}"
 mkdir -p -- "$OUTDIR"

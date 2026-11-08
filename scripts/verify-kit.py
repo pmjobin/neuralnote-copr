@@ -16,7 +16,8 @@ for file in ['scripts/prepare-sources.sh', 'scripts/build-srpm.sh']:
 spec = (root/'neuralnote.spec').read_text()
 prep = (root/'scripts/prepare-sources.sh').read_text()
 make = (root/'.copr/Makefile').read_text()
-assert 'Version:        2.1.0' in spec
+assert 'Version:        2.2.0' in spec
+assert 'VERSION=2.2.0' in prep
 assert 'Source0:        neuralnote-%{version}-vendored.tar.xz' in spec
 assert '%bcond_without vulkan' in spec
 assert '-DFETCHCONTENT_FULLY_DISCONNECTED=ON' in spec

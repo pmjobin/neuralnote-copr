@@ -1,13 +1,15 @@
 # NeuralNote Fedora COPR — Git-hosted source package
 
-**Packaging prototype** for NeuralNote **2.1.0** on **Fedora 45 x86_64**.
+**Packaging prototype** for NeuralNote **2.2.0** on **Fedora x86_64**.
 Installs both the standalone GUI and the VST3 plugin. No Flatpaks, no binary
 artifacts in Git, and no manual SRPM uploading. This is an SCM **make_srpm**
 workflow, not the plain `rpkg` source method.
 
-> **Build / publication status:** scripts have been verified locally for static
-> correctness, but no real NeuralNote build or COPR job has been executed by
-> the preparer. Review third-party licenses (especially JUCE) before publicly
+> **Build / publication status:** static checks and local source RPM generation
+> pass for 2.2.0. CMake selected Fedora's default Clang 23.1.4 in a local
+> build, which was stopped after more than 11 minutes compiling ggml's Vulkan
+> backend. Binary builds, standalone/VST3 runtime behavior and COPR jobs remain
+> unverified. Review third-party licenses (especially JUCE) before publicly
 > distributing packages. MuScriptor CC BY-NC model weights are never included.
 
 ## Flow
@@ -19,15 +21,15 @@ GitHub repository (neuralnote.spec, .copr/Makefile, scripts/)
              v
 COPR source builder: make srpm
   - installs source-builder tools
-  - fetches NeuralNote v2.1.0 and its pinned Git submodules
+  - fetches NeuralNote v2.2.0 and its pinned Git submodules
   - fetches the muscriptor.cpp-pinned ggml revision
   - invokes the upstream checksum-verified SoundFont builder
   - packs all of that into Source0
   - runs rpmbuild -bs -> source RPM
              |
              v
-COPR Fedora 45 RPM builder (without fetching any sources)
-  - Clang 20 / CMake / JUCE / muscriptor.cpp / ggml
+COPR Fedora RPM builder (without fetching any sources)
+  - Fedora default Clang / CMake / JUCE / muscriptor.cpp / ggml
   - installs neuralnote, .desktop and NeuralNote.vst3
              |
              v
@@ -44,7 +46,7 @@ COPR repository -> dnf5 install neuralnote
    bash -n scripts/*.sh
    git init -b main
    git add .
-   git commit -m "Package NeuralNote 2.1.0 for Fedora 45 via COPR SCM"
+   git commit -m "Package NeuralNote 2.2.0 for Fedora via COPR SCM"
    git remote add origin https://github.com/YOUR_GITHUB_USERNAME/neuralnote-copr.git
    git push -u origin main
    ```
@@ -55,11 +57,12 @@ weights, bundled binary tarballs, or generated SRPM/RPM files.
 ## Configure COPR
 
 For a **new** COPR project, with `copr-cli` configured using credentials from
-<https://copr.fedorainfracloud.org/api/>:
+<https://copr.fedorainfracloud.org/api/>, replace `YOUR_FEDORA_CHROOT` below
+with your chosen Fedora x86_64 chroot:
 
 ```bash
 sudo dnf5 install copr-cli
-copr-cli create --chroot fedora-45-x86_64 neuralnote
+copr-cli create --chroot YOUR_FEDORA_CHROOT neuralnote
 copr-cli add-package-scm neuralnote \
   --name neuralnote \
   --clone-url https://github.com/YOUR_GITHUB_USERNAME/neuralnote-copr.git \
@@ -106,7 +109,7 @@ Expected outputs: `/usr/bin/neuralnote`, a GNOME `.desktop` launcher, and
   diagnostic fallback, not a claim that GPU is unnecessary.
 - Source0 is a bundled source archive because upstream CMake needs JUCE,
   muscriptor.cpp, ggml and a generated SF3. The binary RPM stage is offline.
-- The source assembly uses upstream release tag v2.1.0; tag and submodule
+- The source assembly uses upstream release tag v2.2.0; tag and submodule
   identities are recorded in `SOURCE-PROVENANCE.txt`. To obtain a fully
   *immutable* publication process, also pin/verify the release commit SHA
   in the source stage during release qualification.
